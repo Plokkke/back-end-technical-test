@@ -16,10 +16,14 @@ export class TechnicalTestComponent {
   }
 
   async getProductById(id: string) {
-    return this.sequelize.query<Product>(/* sql */ `SELECT * FROM products WHERE id = :id`, {
+    const res = await this.sequelize.query<Product>(/* sql */ `SELECT * FROM products WHERE id = :id`, {
       type: QueryTypes.SELECT,
       replacements: { id },
     });
+    if (!res.length) {
+      return null;
+    }
+    return res[0];
   }
 
   async createProduct(data: CreateProductInput) {

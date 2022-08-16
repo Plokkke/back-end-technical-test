@@ -1,6 +1,6 @@
 export enum OrderStateEnum {
   WAITING = 'WAITING',
-  PAYED = 'PAYED',
+  PAID = 'PAID',
   CANCELED = 'CANCELED',
 }
 

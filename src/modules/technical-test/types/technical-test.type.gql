@@ -1,0 +1,57 @@
+enum ProductColorEnum {
+  RED
+  BLUE
+  GREEN
+  YELLOW
+}
+
+enum ProductFormatEnum {
+  SQUARE
+  CIRCLE
+  SOUP
+  PASTA
+}
+
+enum OrderStateEnum {
+  WAITING
+  PAID
+  CANCELED
+}
+
+type Product {
+  id: String!
+  name: String!
+  color: ProductColorEnum!
+  format: ProductFormatEnum!
+  radius: Int!
+}
+
+type Order {
+  id: String!
+  client_id: String!
+  state: OrderStateEnum!
+}
+
+type Client {
+  id: String!
+  email: String!
+  first_name: String!
+  last_name: String!
+  address: String!
+}
+
+input CreateProductInput {
+  name: String!
+  color: ProductColorEnum!
+  format: ProductFormatEnum!
+  radius: Int!
+}
+
+type Query {
+  Products: [Product!]!
+  Product(id: String!): Product
+}
+
+type Mutation {
+  createProduct(data: CreateProductInput!): Boolean!
+}
