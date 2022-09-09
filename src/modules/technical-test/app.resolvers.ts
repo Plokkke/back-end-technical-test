@@ -1,25 +1,24 @@
 import { Resolver, Query, Args, Mutation } from "@nestjs/graphql";
-import { transpileModule } from "typescript";
 import { TechnicalTestComponent } from "./technical-test.component";
-import { CreateProductInput, Product } from "./types/products.type";
+import { CreatePlateInput, Plate } from "./types/plates.type";
 
-@Resolver('Product')
-export class ProductResolver {
+@Resolver('Plate')
+export class PlateResolver {
   constructor(private readonly component: TechnicalTestComponent) {}
 
-  @Query('Products')
-  async getProducts(): Promise<Product[]> {
-    return this.component.getAllProducts();
+  @Query('Plates')
+  async getPlates(): Promise<Plate[]> {
+    return this.component.getAllPlates();
   }
 
-  @Query('Product')
-  async getProductById(@Args('id') id: string): Promise<Product | null> {
-    return this.component.getProductById(id);
+  @Query('Plate')
+  async getPlateById(@Args('id') id: string): Promise<Plate | null> {
+    return this.component.getPlateById(id);
   }
 
-  @Mutation('createProduct')
-  async createProduct(@Args('data') data: CreateProductInput): Promise<boolean> {
-    await this.component.createProduct(data);
+  @Mutation('createPlate')
+  async createPlate(@Args('data') data: CreatePlateInput): Promise<boolean> {
+    await this.component.createPlate(data);
     return true;
   }
 }

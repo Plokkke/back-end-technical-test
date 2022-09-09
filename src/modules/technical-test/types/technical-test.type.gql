@@ -1,11 +1,11 @@
-enum ProductColorEnum {
+enum PlateColorEnum {
   RED
   BLUE
   GREEN
   YELLOW
 }
 
-enum ProductFormatEnum {
+enum PlateFormatEnum {
   SQUARE
   CIRCLE
   SOUP
@@ -18,11 +18,11 @@ enum OrderStateEnum {
   CANCELED
 }
 
-type Product {
+type Plate {
   id: String!
   name: String!
-  color: ProductColorEnum!
-  format: ProductFormatEnum!
+  color: PlateColorEnum!
+  format: PlateFormatEnum!
   radius: Int!
 }
 
@@ -40,18 +40,18 @@ type Client {
   address: String!
 }
 
-input CreateProductInput {
+input CreatePlateInput {
   name: String!
-  color: ProductColorEnum!
-  format: ProductFormatEnum!
+  color: PlateColorEnum!
+  format: PlateFormatEnum!
   radius: Int!
 }
 
 type Query {
-  Products: [Product!]!
-  Product(id: String!): Product
+  Plates: [Plate!]!
+  Plate(id: String!): Plate
 }
 
 type Mutation {
-  createProduct(data: CreateProductInput!): Boolean!
+  createPlate(data: CreatePlateInput!): Boolean!
 }

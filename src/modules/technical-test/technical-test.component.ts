@@ -3,20 +3,20 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 import { QueryTypes } from 'sequelize';
 
-import { Product, CreateProductInput } from './types/products.type';
+import { Plate, CreatePlateInput } from './types/plates.type';
 
 @Injectable()
 export class TechnicalTestComponent {
   constructor(@Inject('SEQUELIZE') private readonly sequelize: Sequelize) {}
 
-  async getAllProducts() {
-    return this.sequelize.query<Product>(/* sql */ `SELECT * FROM products`, {
+  async getAllPlates() {
+    return this.sequelize.query<Plate>(/* sql */ `SELECT * FROM plates`, {
       type: QueryTypes.SELECT,
     });
   }
 
-  async getProductById(id: string) {
-    const res = await this.sequelize.query<Product>(/* sql */ `SELECT * FROM products WHERE id = :id`, {
+  async getPlateById(id: string) {
+    const res = await this.sequelize.query<Plate>(/* sql */ `SELECT * FROM plates WHERE id = :id`, {
       type: QueryTypes.SELECT,
       replacements: { id },
     });
@@ -26,9 +26,9 @@ export class TechnicalTestComponent {
     return res[0];
   }
 
-  async createProduct(data: CreateProductInput) {
+  async createPlate(data: CreatePlateInput) {
     return this.sequelize.query(
-      /* sql */ `INSERT INTO products (id, name, color, format, radius, price) VALUES (uuid_generate_v4(), :name, :color, :format, :radius, :price)`,
+      /* sql */ `INSERT INTO plates (id, name, color, format, radius, price) VALUES (uuid_generate_v4(), :name, :color, :format, :radius, :price)`,
       {
         type: QueryTypes.INSERT,
         replacements: {

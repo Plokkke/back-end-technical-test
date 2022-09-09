@@ -1,37 +1,37 @@
-export enum ProductColorEnum {
+export enum PlateColorEnum {
   RED = 'RED',
   BLUE = 'BLUE',
   GREEN = 'GREEN',
   YELLOW = 'YELLOW',
 }
 
-export enum ProductFormatEnum {
+export enum PlateFormatEnum {
   CIRCLE = 'CIRCLE',
   SQUARE = 'SQUARE',
   PASTA = 'PASTA',
   SOUP = 'SOUP',
 }
 
-export interface CreateProductInput {
+export interface CreatePlateInput {
   name: string;
 
-  color: ProductColorEnum;
+  color: PlateColorEnum;
 
-  format: ProductFormatEnum;
+  format: PlateFormatEnum;
 
   radius: number;
 
   price: number;
 }
 
-export class Product {
+export class Plate {
   id: number;
 
   name: string;
 
-  color: ProductColorEnum;
+  color: PlateColorEnum;
 
-  format: ProductFormatEnum;
+  format: PlateFormatEnum;
 
   radius: number;
 
