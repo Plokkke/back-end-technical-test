@@ -24,6 +24,7 @@ type Plate {
   color: PlateColorEnum!
   format: PlateFormatEnum!
   radius: Int!
+  price: Int!
 }
 
 type Order {
@@ -45,6 +46,7 @@ input CreatePlateInput {
   color: PlateColorEnum!
   format: PlateFormatEnum!
   radius: Int!
+  price: Int!
 }
 
 type Query {
