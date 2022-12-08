@@ -11,3 +11,6 @@ jspm_packages/
 
 # build
 dist/
+
+# IDE files
+.idea/
