@@ -24,7 +24,7 @@ export function init(sequelize: Sequelize) {
 }
 
 export function associate(sequelize: Sequelize): void {
-  const { Order, OrderProduct, Product } = sequelize.models;
+  const { Order, OrderEntry, Product } = sequelize.models;
 
-  Product.belongsToMany(Order, { as: 'orders', through: OrderProduct, foreignKey: 'product_id', onDelete: 'RESTRICT', onUpdate: 'CASCADE' });
+  Product.belongsToMany(Order, { as: 'orders', through: OrderEntry, foreignKey: 'product_id', onDelete: 'RESTRICT', onUpdate: 'CASCADE' });
 }

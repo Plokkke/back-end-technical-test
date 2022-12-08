@@ -101,4 +101,34 @@ export class TechnicalTestComponent {
       return null;
     }
   }
+
+  async getOrderEntries(param: { orderId: string }, attributes: string[]) {
+    const order = await this.sequelize.models.Order.findOne({
+      where: { id: param.orderId },
+      attributes: [],
+      include: [{
+        through: {
+          attributes: attributeFilter(this.sequelize.models.OrderEntry, ['quantity']),
+          as: 'entry'
+        },
+        model: this.sequelize.models.Product,
+        as: 'products',
+        attributes: attributeFilter(this.sequelize.models.Product, attributes),
+        required: true,
+      }]
+    });
+    // @ts-ignore
+    return order.products.map((product) => ({
+      ...product.entry.get({ plain: true }),
+      product: product.get({ plain: true }),
+    }));
+  }
+
+  async getProduct(id: string, attributes: string[]) {
+    const product = await this.sequelize.models.Product.findOne({
+      attributes: attributeFilter(this.sequelize.models.Product, attributes),
+      where: { id },
+    });
+    return product.get({ plain: true });
+  }
 }

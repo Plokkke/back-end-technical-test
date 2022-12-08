@@ -27,11 +27,24 @@ type Plate {
   price: Int!
 }
 
+type Product {
+  id: String!
+  name: String!
+  price: Int!
+}
+
+type OrderEntry {
+  product: Product!
+  quantity: Int!
+}
+
 type Order {
   id: String!
   client_id: String!
   state: OrderStateEnum!
   client: Client!
+  amount: Int!
+  entries: [OrderEntry!]!
 }
 
 type Client {
@@ -43,8 +56,16 @@ type Client {
   orders(filters: OrderFilters): [Order!]!
 }
 
+input IntRange {
+  min: Int
+  max: Int
+  minExcluded: Boolean = false
+  maxExcluded: Boolean = false
+}
+
 input OrderFilters {
   state: OrderStateEnum
+  amount: IntRange
 }
 
 input CreatePlateInput {

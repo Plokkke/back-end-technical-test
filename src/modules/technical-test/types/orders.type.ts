@@ -12,12 +12,12 @@ export class Order {
   state: OrderStateEnum;
 }
 
-export class OrderProduct {
+export class OrderEntry {
   order_id: string; // uuid
 
   product_id: string; // uuid
 
-  number: number; // TODO rename to quantity
+  quantity: number;
 }
 
 export type OrderFilters = {

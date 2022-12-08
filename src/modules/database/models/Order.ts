@@ -23,8 +23,11 @@ export function init(sequelize: Sequelize) {
   });
 }
 export function associate(sequelize: Sequelize): void {
-  const { Client, Order, OrderProduct, Product } = sequelize.models;
+  const { Client, Order, OrderEntry, Product } = sequelize.models;
 
   Order.belongsTo(Client, { as: 'client', foreignKey: 'client_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-  Order.belongsToMany(Product, { as: 'products', through: OrderProduct, foreignKey: 'order_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+  Order.belongsToMany(Product, { as: 'products', through: OrderEntry, foreignKey: 'order_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+
+  // For graphql optimisation
+  Order.hasMany(OrderEntry, { as: 'entries', foreignKey: 'order_id' });
 }
