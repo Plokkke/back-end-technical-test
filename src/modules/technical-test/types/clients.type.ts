@@ -1,5 +1,5 @@
 export class Client {
-  id: number;
+  id: string; // uuid
 
   first_name: string;
 

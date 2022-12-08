@@ -5,7 +5,7 @@ export enum OrderStateEnum {
 }
 
 export class Order {
-  id: number;
+  id: string; // uuid
 
   client_id: number;
 
@@ -13,9 +13,9 @@ export class Order {
 }
 
 export class OrderProduct {
-  order_id: number;
+  order_id: string; // uuid
 
-  product_id: number;
+  product_id: string; // uuid
 
   number: number;
 }
