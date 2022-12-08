@@ -25,7 +25,7 @@ export interface CreatePlateInput {
 }
 
 export class Plate {
-  id: string; // uuid;;
+  id: string; // uuid
 
   name: string;
 

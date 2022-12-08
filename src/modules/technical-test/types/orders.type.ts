@@ -17,5 +17,10 @@ export class OrderProduct {
 
   product_id: string; // uuid
 
-  number: number;
+  number: number; // TODO rename to quantity
+}
+
+export type OrderFilters = {
+  clientId?: string;
+  state?: OrderStateEnum;
 }

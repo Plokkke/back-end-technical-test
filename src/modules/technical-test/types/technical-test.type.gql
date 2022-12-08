@@ -31,6 +31,7 @@ type Order {
   id: String!
   client_id: String!
   state: OrderStateEnum!
+  client: Client!
 }
 
 type Client {
@@ -39,6 +40,11 @@ type Client {
   first_name: String!
   last_name: String!
   address: String!
+  orders(filters: OrderFilters): [Order!]!
+}
+
+input OrderFilters {
+  state: OrderStateEnum
 }
 
 input CreatePlateInput {
@@ -52,6 +58,8 @@ input CreatePlateInput {
 type Query {
   Plates: [Plate!]!
   Plate(id: String!): Plate
+  Client(id: ID!): Client
+  Orders(filters: OrderFilters): [Order!]!
 }
 
 type Mutation {

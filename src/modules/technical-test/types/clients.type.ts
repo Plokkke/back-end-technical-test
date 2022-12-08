@@ -9,3 +9,7 @@ export class Client {
 
   address: string;
 }
+
+export type ClientIdentifiers = {
+  orderId?: string; // uuid
+}
