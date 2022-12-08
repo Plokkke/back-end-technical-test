@@ -6,12 +6,17 @@ import {QueryTypes} from 'sequelize';
 import DataLoader from 'dataloader';
 
 import {CreatePlateInput, Plate} from './types/plates.type';
-import {OrderEntry, OrderEntryFilters, OrderFilters} from "./types/orders.type";
-import {ClientIdentifiers} from "./types/clients.type";
+import {Order, OrderEntry, OrderEntryFilters, OrderFilters} from "./types/orders.type";
+import {Client, ClientIdentifiers} from "./types/clients.type";
 import {Product} from "./types/product.type";
 
 type Attr = {
   primaryKey?: boolean;
+}
+
+type ClientLoadPayload = {
+  identifiers: ClientIdentifiers;
+  attributes?: string[];
 }
 
 type OrderEntryLoadPayload = {
@@ -24,7 +29,7 @@ type ProductLoadPayload = {
   attributes?: string[];
 }
 
-function attributeFilter(model, attributes) {
+function attributeFilter(model, attributes = []) {
   // Keep primary keys for potential sub relation loadings
   return Object.entries(model.getAttributes())
     .filter(([key, attr]: [string, Attr]) => attr.primaryKey || attributes.includes(key))
@@ -71,19 +76,58 @@ export class TechnicalTestComponent {
     );
   }
 
-  async getClient(id: string, attributes?: string[]) {
-    try {
-      const client = await this.sequelize.models.Client.findOne({
+  #clientLoader = new DataLoader(async (payloads: ClientLoadPayload[]) => {
+    // TODO assert that payloads identifier have at least one key
+    const attributes = uniques(payloads.flatMap((payload) => payload.attributes).filter(Boolean));
+    const ids = uniques(payloads.map((payload) => payload.identifiers.id).filter(Boolean));
+    const orderIds = uniques(payloads.map((payload) => payload.identifiers.orderId).filter(Boolean));
+    const clients = [
+      ...ids.length ? await this.sequelize.models.Client.findAll({
         attributes: attributeFilter(this.sequelize.models.Client, attributes),
-        where: {id}
-      });
-      return client.get({ plain: true });
-    } catch (e) {
-      return null;
-    }
+        where: {id: ids},
+      }) : [],
+      ...orderIds.length ? await this.sequelize.models.Client.findAll({
+        attributes: attributeFilter(this.sequelize.models.Client, attributes),
+        include: [{
+          model: this.sequelize.models.Order,
+          as: 'orders',
+          where: { id: orderIds },
+          attributes: attributeFilter(this.sequelize.models.Order),
+          required: true,
+        }],
+      }) : [],
+    ]
+    const clientsMapping = clients.reduce((acc, client) => {
+      const clientPlain: Client = client.get({ plain: true });
+      acc.byId[clientPlain.id] = client;
+      const orders = clientPlain['orders'] as Order[];
+      if (orders) {
+        orders.forEach((order) => {
+          acc.byOrderId[order.id] = client;
+        });
+      }
+      return acc;
+    } , { byId: {}, byOrderId: {} });
+    return payloads.map((payload) => {
+      if (payload.identifiers.id) {
+        return clientsMapping.byId[payload.identifiers.id];
+      }
+      if (payload.identifiers.orderId) {
+        return clientsMapping.byOrderId[payload.identifiers.orderId];
+      }
+      // Can't happen due to the assertion at the beginning of the function
+    });
+  })
+
+  async getClient(id: string, attributes?: string[]) {
+    return this.#clientLoader.load({ identifiers: { id }, attributes });
   }
 
-  async listOrders(options: OrderFilters, attributes: string) {
+  async findClient(identifiers: ClientIdentifiers, attributes: string[]) {
+    return this.#clientLoader.load({ identifiers, attributes });
+  }
+
+  async listOrders(options: OrderFilters, attributes: string[]) {
     const orders = await this.sequelize.models.Order.findAll({
       attributes: attributeFilter(this.sequelize.models.Order, attributes),
       ...options && {
@@ -94,29 +138,6 @@ export class TechnicalTestComponent {
       }
     });
     return orders.map((order) => order.get({ plain: true }));
-  }
-
-  async findClient(options: ClientIdentifiers, attributes: string[]) {
-    try {
-      // Use findAll with to detect duplicates and because findOne generate awful SQL Query with 3 nested selects
-      const clients = await this.sequelize.models.Client.findAll({
-        attributes: attributeFilter(this.sequelize.models.Client, attributes),
-        ...options.orderId && {
-          include: [{
-            as: 'orders',
-            model: this.sequelize.models.Order,
-            attributes: [],
-            where: {id: options.orderId},
-            required: true,
-          }]
-        },
-      });
-
-      // length should be 1 or 0, TODO throw error if length > 1 ?
-      return clients.length === 1 ? clients[0].get({ plain: true }) : null;
-    } catch (e) {
-      return null;
-    }
   }
 
   #entriesLoader = new DataLoader(async (payloads: OrderEntryLoadPayload[]) => {

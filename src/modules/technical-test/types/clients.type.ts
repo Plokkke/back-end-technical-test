@@ -11,5 +11,6 @@ export class Client {
 }
 
 export type ClientIdentifiers = {
-  orderId?: string; // uuid
+  id?: string;
+  orderId?: string;
 }
