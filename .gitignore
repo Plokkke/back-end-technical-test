@@ -14,3 +14,6 @@ dist/
 
 # IDE files
 .idea/
+
+# Environment variables
+src/config.json

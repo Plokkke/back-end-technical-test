@@ -2,6 +2,8 @@ import { Sequelize } from "sequelize-typescript";
 
 import * as modelsByName from './models';
 
+import config from '../../config.json';
+
 export type SequelizeModel = {
   init: (sequelize: Sequelize) => void;
   associate?: (sequelize: Sequelize) => void;
@@ -13,11 +15,7 @@ export const databaseProvider =
     useFactory: async () => {
       const sequelize = new Sequelize({
         dialect: 'postgres',
-        host: '',
-        port: 0,
-        username: '',
-        password: '',
-        database: '',
+        ...config,
       });
 
       const models: SequelizeModel[] = Object.values(modelsByName);
