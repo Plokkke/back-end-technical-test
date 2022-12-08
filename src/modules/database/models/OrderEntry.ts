@@ -13,3 +13,11 @@ export function init(sequelize: Sequelize) {
     timestamps: false,
   });
 }
+
+export function associate(sequelize: Sequelize): void {
+  const { Order, OrderEntry, Product } = sequelize.models;
+
+  // For graphql optimization
+  OrderEntry.belongsTo(Order, { foreignKey: 'order_id', as: 'order' });
+  OrderEntry.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
+}

@@ -24,3 +24,7 @@ export type OrderFilters = {
   clientId?: string;
   state?: OrderStateEnum;
 }
+
+export type OrderEntryFilters = {
+  orderId: string; // TODO switch to optional when there will be other ways to filter
+}
